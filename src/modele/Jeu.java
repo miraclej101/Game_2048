@@ -168,7 +168,7 @@ public class Jeu extends Observable {
                 for (int j = 1; j < tabCases.length; j++) {
                     if (tabCases[i][j] != null) {
                         Point pt = new Point(j,i);
-                        deplacer(d,tabCases[i][j],pt);
+                        tabCases[i][j].deplacer(d,pt);
                     }
                 }
             }
@@ -177,7 +177,7 @@ public class Jeu extends Observable {
                 for(int j=tabCases.length-2;j>=0;j--){
                     if (tabCases[i][j] != null) {
                         Point pt = new Point(j,i);  
-                        deplacer(d, tabCases[i][j],pt);
+                        tabCases[i][j].deplacer(d,pt);
                     }   
                 }
             }
@@ -186,7 +186,7 @@ public class Jeu extends Observable {
                 for (int j = 0; j < tabCases.length; j++) {
                     if (tabCases[i][j] != null) {
                         Point pt = new Point(j,i);  
-                        deplacer(d, tabCases[i][j],pt);
+                        tabCases[i][j].deplacer(d,pt);
                     }
                 }
             }
@@ -195,7 +195,7 @@ public class Jeu extends Observable {
                 for(int j=0;j<tabCases.length;j++){
                     if (tabCases[i][j] != null) {
                         Point pt = new Point(j,i);  
-                        deplacer(d, tabCases[i][j],pt);
+                        tabCases[i][j].deplacer(d,pt);
                     }
                 }
             }
@@ -204,29 +204,13 @@ public class Jeu extends Observable {
     }    
 
     public void deplacer(Direction d, Case c, Point p) {
-        
-        boolean estTermine= false;
-        while (!estTermine) {
-            Point ptVoisin = getPointVoisin(d, p);
-            Case cVoisin = getVoisin(d, p);
-            if (ptVoisin.getX()==-1 || ptVoisin.getY() ==-1 ){
-                estTermine = true;           
-            } else  if(cVoisin == null) {
-                System.out.println("IdCase c deplacer Jeu = "+c.getIdCase());
-                tabCases[ptVoisin.getY()][ptVoisin.getX()] = c;  //deplacer case c a nouvelle position
-                int row_precedent = p.getY();
-                int col_precedent = p.getX();
-                tabCases[row_precedent][col_precedent] = null; //set nul à l'ancienne position de la case c
-                p=ptVoisin;
-            } else if (cVoisin.getValeur() == c.getValeur()) {
-                System.out.println("idCase cVoisin deplacer Case = "+cVoisin.getIdCase());
-                c.fusion(cVoisin, p);
-                estTermine = true;
-            }else{
-                estTermine = true;
-            }
-        }
-             
+       
+         Point ptVoisin = getPointVoisin(d, p);
+         tabCases[ptVoisin.getY()][ptVoisin.getX()] = c;  //deplacer case c a nouvelle position
+         int row_precedent = p.getY();
+         int col_precedent = p.getX();
+         tabCases[row_precedent][col_precedent] = null; //set nul à l'ancienne position de la case c
+                     
     }
 
     public void enlever(Point p) {
