@@ -75,10 +75,13 @@ public class Swing2048 extends JFrame implements Observer {
                                     tabC[i][j].setForeground(Color.orange);
                                     break;
                                 case 16:
-                                    tabC[i][j].setForeground(Color.cyan);
+                                    tabC[i][j].setForeground(Color.PINK);
                                     break;
                                 case 32:
                                     tabC[i][j].setForeground(Color.green);
+                                    break;
+                                default:
+                                    tabC[i][j].setForeground(Color.BLACK);
                                     break;
                             }
                             tabC[i][j].setText(c.getValeur() + "");
@@ -104,10 +107,10 @@ public class Swing2048 extends JFrame implements Observer {
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) { // on regarde quelle touche a été pressée
                    
-                    case KeyEvent.VK_LEFT : jeu.action(Direction.gauche);break;
-                    case KeyEvent.VK_RIGHT : jeu.action(Direction.droite);break;
-                    case KeyEvent.VK_DOWN : jeu.action(Direction.bas);break;
-                    case KeyEvent.VK_UP : jeu.action(Direction.haut);break;
+                    case KeyEvent.VK_LEFT : jeu.actionThread(Direction.gauche);break;
+                    case KeyEvent.VK_RIGHT : jeu.actionThread(Direction.droite);break;
+                    case KeyEvent.VK_DOWN : jeu.actionThread(Direction.bas);break;
+                    case KeyEvent.VK_UP : jeu.actionThread(Direction.haut);break;
 
                 }
             }
