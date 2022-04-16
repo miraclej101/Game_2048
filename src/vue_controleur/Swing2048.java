@@ -13,13 +13,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.border.LineBorder;
 
 public class Swing2048 extends JFrame implements Observer {
     private static final int PIXEL_PER_SQUARE = 60;
     // tableau de cases : i, j -> case graphique
     private JLabel[][] tabC;
     private Jeu jeu;
-    private JLabel lbl_score;
+    private JLabel lbl_score,lbl_best_score;
 
     public Swing2048(Jeu _jeu) {
         jeu = _jeu;
@@ -27,14 +28,20 @@ public class Swing2048 extends JFrame implements Observer {
         setSize(jeu.getSize() * PIXEL_PER_SQUARE, (jeu.getSize()+1) * PIXEL_PER_SQUARE);
         tabC = new JLabel[jeu.getSize()][jeu.getSize()];
         lbl_score = new JLabel(); 
-        Border score_border = BorderFactory.createTitledBorder("Score");
+        LineBorder lineBorder = new LineBorder(Color.BLUE);
+        Border score_border = BorderFactory.createTitledBorder(lineBorder,"Score");
         lbl_score.setBorder(score_border);
         lbl_score.setHorizontalAlignment(SwingConstants.RIGHT);
+        lbl_best_score = new JLabel();
+        Border best_score_border = BorderFactory.createTitledBorder(lineBorder,"Best");
+        lbl_best_score.setBorder(best_score_border);
+        lbl_best_score.setHorizontalAlignment(SwingConstants.RIGHT);
         
         JPanel contentPane = new JPanel(new GridLayout(jeu.getSize()+1, jeu.getSize()));
         contentPane.add(lbl_score);
-        for(int i=0;i<3;i++){
-           contentPane.add(new JLabel()); //ajouter blank label à grid contentPane  
+        contentPane.add(lbl_best_score);
+        for(int i=0;i<2;i++){
+           contentPane.add(new JLabel()); //ajouter blank labels à grid contentPane  
         }
        
          for (int i = 0; i < jeu.getSize(); i++) {
@@ -65,6 +72,7 @@ public class Swing2048 extends JFrame implements Observer {
             @Override
             public void run() {
                 lbl_score.setText(jeu.getScore()+"");
+                lbl_best_score.setText(Jeu.getBest_score()+"");
                 for (int i = 0; i < jeu.getSize(); i++) {
                     for (int j = 0; j < jeu.getSize(); j++) {
                         Case c = jeu.getCase(i, j);
@@ -75,23 +83,29 @@ public class Swing2048 extends JFrame implements Observer {
                         }else{ 
                             int choix = c.getValeur();
                             switch(choix){
-                                case 2:
-                                    tabC[i][j].setBackground(Color.cyan);
+                                 case 2:
+                                    tabC[i][j].setBackground(Color.CYAN);
                                     break;
                                 case 4:
-                                    tabC[i][j].setBackground(Color.blue);
+                                    tabC[i][j].setBackground(Color.decode("#E9D7BD"));
                                     break;
                                 case 8:
-                                    tabC[i][j].setBackground(Color.orange);
+                                    tabC[i][j].setBackground(Color.decode("#C88E52"));
                                     break;
                                 case 16:
-                                    tabC[i][j].setBackground(Color.PINK);
+                                    tabC[i][j].setBackground(Color.decode("#C06C3D"));
                                     break;
                                 case 32:
-                                    tabC[i][j].setBackground(Color.green);
+                                    tabC[i][j].setBackground(Color.ORANGE);
+                                    break;
+                                case 64:
+                                    tabC[i][j].setBackground(Color.decode("#F9825C"));
+                                    break;
+                                case 128:
+                                    tabC[i][j].setBackground(Color.PINK);
                                     break;
                                 default:
-                                    tabC[i][j].setBackground(Color.YELLOW);
+                                    tabC[i][j].setBackground(Color.decode("#E6DCD1"));
                                     break;
                             }
                             tabC[i][j].setText(c.getValeur() + "");
@@ -102,10 +116,10 @@ public class Swing2048 extends JFrame implements Observer {
 
                 }
                 if(jeu.isEstTermine()){
-                    if(jeu.isGangant()){
-                        JOptionPane.showMessageDialog(rootPane,"Congratulations, vous gagnez.","Jeu termine", JOptionPane.INFORMATION_MESSAGE);
+                    if(jeu.isGagnant()){
+                        JOptionPane.showMessageDialog(rootPane,"Congratulations, vous avez gagné.","Jeu termine", JOptionPane.INFORMATION_MESSAGE);
                     }else{
-                        JOptionPane.showMessageDialog(rootPane,"Vous perdez.","Jeu termine", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(rootPane,"Vous avez perdu.","Jeu termine", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
                

@@ -1,11 +1,16 @@
 package modele;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Random;
 
 import javax.swing.text.TabExpander;
 
 import java.util.EventListener;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,21 +18,22 @@ public class Jeu extends Observable {
 
     private Case[][] tabCases;
     private static Random rnd = new Random();
-    private boolean gangant;
+    private boolean gagnant;
     private boolean estTermine;
     private int score;
+    private static int best_score =0;
 
     public Jeu(int size) {
         tabCases = new Case[size][size];
-        gangant = false;
+        gagnant = false;
         estTermine = false;
         score = 0;
         rnd();
        
     }
 
-    public boolean isGangant() {
-        return gangant;
+    public boolean isGagnant() {
+        return gagnant;
     }
       
     public int getSize() {
@@ -49,12 +55,44 @@ public class Jeu extends Observable {
     public int getScore() {
         return score;
     }
-
+    public static int getBest_score() {
+        return best_score;
+    }
     
     public void setScore(int score) {
         this.score = score;
     }
 
+    public static void setBest_score(int best_score) {
+        Jeu.best_score = best_score;
+    }
+
+    
+    
+    private int readFile(String path){
+        int score_readfile = 0; 
+        try {
+            File file = new File(path);
+            Scanner sc = new Scanner(file);
+            if(sc.hasNextLine()){
+                score_readfile = sc.nextInt();
+            }
+            sc.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Jeu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return score_readfile;
+    }
+    public static void writeFile(String path){
+        try {
+            FileWriter fWriter = new FileWriter(path);
+            fWriter.write(best_score+"");
+            fWriter.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Jeu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
     
     public void rnd() {
         Jeu jeu = this;
@@ -69,6 +107,14 @@ public class Jeu extends Observable {
                 for(int i=0;i<2;i++){
                     jeu.nouvelleCase();  
                 }
+                String path = "./best_score.txt";  //lire la meilleurs score du jeu
+                int score_read = readFile(path);
+                //affecter best_score si la meilleurs lu par le fichier est plus important 
+                //que la variable best_score de la class
+                if(best_score<score_read){    
+                   best_score = score_read;
+                }
+                System.out.println("Best score = "+best_score);
                 /*
                 int r;
 
@@ -266,7 +312,7 @@ public class Jeu extends Observable {
         for(int i = 0; i < tabCases.length; i++) {
             for (int j = 0; j < tabCases.length; j++) {
                 if(tabCases[i][j]!=null && tabCases[i][j].getValeur()==2048){
-                    gangant = true; // retourne gagnant = true si un joueur termine le jeu par une case de valeur de 2048.
+                    gagnant = true; // retourne gagnant = true si un joueur termine le jeu par une case de valeur de 2048.
                     estTermine = true;
                     return true;
                 }

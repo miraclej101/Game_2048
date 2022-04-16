@@ -57,11 +57,11 @@ public class Case {
         while (!estTermine) {
             Point ptVoisin = jeu.getPointVoisin(d, p);
             Case cVoisin = jeu.getVoisin(d, p);
-            if (ptVoisin.getX()==-1 || ptVoisin.getY() ==-1 ){
-                estTermine = true;           
-            } else  if(cVoisin == null) {
+            if(cVoisin == null) {
                jeu.deplacer(d, this, p);
-               p = ptVoisin;
+               p = ptVoisin;       
+            } else if(cVoisin.getValeur()==-1 ){
+              estTermine = true;    
             } else if (cVoisin.getValeur() == this.getValeur()) {
                 fusion(cVoisin, p);
                 estTermine = true;
@@ -80,7 +80,14 @@ public class Case {
             score +=this.valeur*2;
             jeu.setScore(score);
             System.out.println("Score = "+score);
-            jeu.enlever(p);            
+            jeu.enlever(p);     
+            int bestScore = Jeu.getBest_score();    
+            if(bestScore<score){
+                Jeu.setBest_score(score);
+                String path = "./best_score.txt";
+                Jeu.writeFile(path);
+                System.out.println("Best score = "+Jeu.getBest_score());
+            }
         }
     }
 
