@@ -1,4 +1,5 @@
 /build/
-/dist//target/
+/dist/
+/target/
 ./nb-configuration.xml
 ./best_score.txt
