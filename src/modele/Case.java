@@ -75,7 +75,11 @@ public class Case {
     public void fusion(Case cVoisin, Point p) {
         if (cVoisin.estFusionne == false) {
             cVoisin.setValeur(this.valeur * 2);  //modifier sa valeur en double donc son hashvalue est changé
-            cVoisin.estFusionne=true;       
+            cVoisin.estFusionne=true;
+            int score = jeu.getScore();
+            score +=this.valeur*2;
+            jeu.setScore(score);
+            System.out.println("Score = "+score);
             jeu.enlever(p);            
         }
     }

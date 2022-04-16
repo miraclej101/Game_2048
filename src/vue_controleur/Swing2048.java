@@ -11,7 +11,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -20,15 +19,24 @@ public class Swing2048 extends JFrame implements Observer {
     // tableau de cases : i, j -> case graphique
     private JLabel[][] tabC;
     private Jeu jeu;
+    private JLabel lbl_score;
 
     public Swing2048(Jeu _jeu) {
         jeu = _jeu;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(jeu.getSize() * PIXEL_PER_SQUARE, jeu.getSize() * PIXEL_PER_SQUARE);
+        setSize(jeu.getSize() * PIXEL_PER_SQUARE, (jeu.getSize()+1) * PIXEL_PER_SQUARE);
         tabC = new JLabel[jeu.getSize()][jeu.getSize()];
-
-        JPanel contentPane = new JPanel(new GridLayout(jeu.getSize(), jeu.getSize()));
-
+        lbl_score = new JLabel(); 
+        Border score_border = BorderFactory.createTitledBorder("Score");
+        lbl_score.setBorder(score_border);
+        lbl_score.setHorizontalAlignment(SwingConstants.RIGHT);
+        
+        JPanel contentPane = new JPanel(new GridLayout(jeu.getSize()+1, jeu.getSize()));
+        contentPane.add(lbl_score);
+        for(int i=0;i<3;i++){
+           contentPane.add(new JLabel()); //ajouter blank label à grid contentPane  
+        }
+       
          for (int i = 0; i < jeu.getSize(); i++) {
             for (int j = 0; j < jeu.getSize(); j++) {
                 Border border = BorderFactory.createLineBorder(Color.darkGray, 5);
@@ -56,40 +64,51 @@ public class Swing2048 extends JFrame implements Observer {
         SwingUtilities.invokeLater(new Runnable() { // demande au processus graphique de réaliser le traitement
             @Override
             public void run() {
+                lbl_score.setText(jeu.getScore()+"");
                 for (int i = 0; i < jeu.getSize(); i++) {
                     for (int j = 0; j < jeu.getSize(); j++) {
                         Case c = jeu.getCase(i, j);
 
                         if (c == null) {
                             tabC[i][j].setText("");
+                            tabC[i][j].setBackground(Color.WHITE);
                         }else{ 
                             int choix = c.getValeur();
                             switch(choix){
                                 case 2:
-                                    tabC[i][j].setForeground(Color.gray);
+                                    tabC[i][j].setBackground(Color.cyan);
                                     break;
                                 case 4:
-                                    tabC[i][j].setForeground(Color.blue);
+                                    tabC[i][j].setBackground(Color.blue);
                                     break;
                                 case 8:
-                                    tabC[i][j].setForeground(Color.orange);
+                                    tabC[i][j].setBackground(Color.orange);
                                     break;
                                 case 16:
-                                    tabC[i][j].setForeground(Color.PINK);
+                                    tabC[i][j].setBackground(Color.PINK);
                                     break;
                                 case 32:
-                                    tabC[i][j].setForeground(Color.green);
+                                    tabC[i][j].setBackground(Color.green);
                                     break;
                                 default:
-                                    tabC[i][j].setForeground(Color.BLACK);
+                                    tabC[i][j].setBackground(Color.YELLOW);
                                     break;
                             }
                             tabC[i][j].setText(c.getValeur() + "");
+                            tabC[i][j].setOpaque(true);
                         }
                             
                     }
 
                 }
+                if(jeu.isEstTermine()){
+                    if(jeu.isGangant()){
+                        JOptionPane.showMessageDialog(rootPane,"Congratulations, vous gagnez.","Jeu termine", JOptionPane.INFORMATION_MESSAGE);
+                    }else{
+                        JOptionPane.showMessageDialog(rootPane,"Vous perdez.","Jeu termine", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+               
             }
         });
     }

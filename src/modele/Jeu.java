@@ -14,10 +14,14 @@ public class Jeu extends Observable {
     private Case[][] tabCases;
     private static Random rnd = new Random();
     private boolean gangant;
+    private boolean estTermine;
+    private int score;
 
     public Jeu(int size) {
         tabCases = new Case[size][size];
         gangant = false;
+        estTermine = false;
+        score = 0;
         rnd();
        
     }
@@ -38,6 +42,20 @@ public class Jeu extends Observable {
         return tabCases;
     }
 
+    public boolean isEstTermine() {
+        return estTermine;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    
     public void rnd() {
         Jeu jeu = this;
      //   new Thread() { // permet de libérer le processus graphique ou de la console
@@ -249,6 +267,7 @@ public class Jeu extends Observable {
             for (int j = 0; j < tabCases.length; j++) {
                 if(tabCases[i][j]!=null && tabCases[i][j].getValeur()==2048){
                     gangant = true; // retourne gagnant = true si un joueur termine le jeu par une case de valeur de 2048.
+                    estTermine = true;
                     return true;
                 }
                 else if (tabCases[i][j] == null) {
@@ -257,6 +276,7 @@ public class Jeu extends Observable {
 
             }
         }
+        estTermine = true;
         return true;
     }
 
