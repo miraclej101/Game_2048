@@ -84,7 +84,7 @@ public class Case  implements Cloneable{
             int score = jeu.getScore();
             score +=this.valeur*2;
             jeu.setScore(score);
-            System.out.println("Score = "+score);
+    //        System.out.println("Score = "+score);
             jeu.enlever(p);     
             int bestScore = Jeu.getBest_score();    
             if(bestScore<score){

@@ -23,7 +23,8 @@ public class Jeu extends Observable {
     private int score;
     private static int best_score =0;
     private Case[][] tabCoupHistorique;
-
+    private int quota_undo =2; //nombre de fois qu'on peut reprendre d'un coup précédent
+    
     public Jeu(int size) {
         tabCases = new Case[size][size];
         tabCoupHistorique = new Case[size][size];
@@ -59,6 +60,10 @@ public class Jeu extends Observable {
     }
     public static int getBest_score() {
         return best_score;
+    }
+
+    public int getQuota_undo() {
+        return quota_undo;
     }
     
     public void setScore(int score) {
@@ -96,6 +101,7 @@ public class Jeu extends Observable {
                tabCases[i][j] = tabCoupHistorique[i][j];
            }
        }
+       quota_undo--;  //un nombre de quota undo décrémenté par 1
         setChanged();
         notifyObservers(); 
     }
@@ -145,7 +151,9 @@ public class Jeu extends Observable {
                 if(best_score<score_read){    
                    best_score = score_read;
                 }
-                System.out.println("Best score = "+best_score);
+                //reinitialiser quota_un =2 lors qu'un nouveau jeu lance.
+                quota_undo = 2;
+    //            System.out.println("Best score = "+best_score);
                 /*
                 int r;
 

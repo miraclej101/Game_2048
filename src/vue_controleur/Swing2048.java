@@ -18,7 +18,6 @@ import javax.swing.border.LineBorder;
 public class Swing2048 extends JFrame implements Observer {
     private static final int PIXEL_PER_SQUARE = 60;
     private static final String PATH_ICON_UNDO = "./60214_undo_icon.png";
-    private int quota_undo =2; //nombre de fois qu'on peut reprendre d'un coup précédent
     // tableau de cases : i, j -> case graphique
     private JLabel[][] tabC;
     private Jeu jeu;
@@ -51,6 +50,17 @@ public class Swing2048 extends JFrame implements Observer {
         scorePane.add(lbl_score);
         scorePane.add(lbl_best_score);
         scorePane.add(btn_undo);
+        
+        final JMenuBar menuBar = new JMenuBar();
+        JMenu settingsMenu = new JMenu("Settings");
+        JMenuItem newMenuItem1 = new JMenuItem("New game");
+        JMenuItem newMenuItem2 = new JMenuItem("Exit");
+        newMenuItem2.addActionListener(e -> actionExit());
+        newMenuItem1.addActionListener(e -> actionNewGame());
+        settingsMenu.add(newMenuItem1);
+        settingsMenu.add(newMenuItem2);
+        menuBar.add(settingsMenu);
+        setJMenuBar(menuBar);
         
         JPanel contentPane = new JPanel(new BorderLayout());
         contentPane.add(scorePane,BorderLayout.NORTH);
@@ -152,7 +162,7 @@ public class Swing2048 extends JFrame implements Observer {
             @Override
             public void keyPressed(KeyEvent e) {
                 //setEnable button undo pour rendre possbile la reprise d'un coup précédent 
-                if(quota_undo>0){
+                if(jeu.getQuota_undo()>0){
                     btn_undo.setEnabled(true);
                 }
       
@@ -180,10 +190,28 @@ public class Swing2048 extends JFrame implements Observer {
        this.requestFocusInWindow(); //rendre focus sur le panel encore une fois pour capturer les keyEvents
        //restituer les positions des cases dans tabCase comme un coup précédent
        jeu.reprendreCoup();
-       quota_undo--;  //un nombre de quota undo décrémenté par 1
-       if(quota_undo<=0){
+       if(jeu.getQuota_undo()<=0){
           btn_undo.setEnabled(false); 
        }
        
+    }
+
+    private void actionExit() {
+        int result = JOptionPane.showConfirmDialog(this, "Quitter le jeu ?", "Quitter",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
+    }
+
+    private void actionNewGame() {
+       int result = JOptionPane.showConfirmDialog(this, "Nouvelle partie ?", "Nouvelle partie",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION) {
+            jeu.rnd();
+            btn_undo.setEnabled(false);
+        }
     }
 }

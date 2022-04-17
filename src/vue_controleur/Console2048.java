@@ -6,6 +6,8 @@ import modele.Jeu;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Console2048 extends Thread implements Observer {
 
@@ -53,17 +55,23 @@ public class Console2048 extends Thread implements Observer {
                     boolean end = false;
 
                     while (!end) {
-                        String s = null;
-                        try {
-                            s = Character.toString((char)System.in.read());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        if (s.equals("4") || s.equals("8") || s.equals("6") || s.equals("2") ) {
+                    
+                            String s = null;
+                            try {
+                                s = Character.toString((char)System.in.read());
+                           //     end = jeu.isEstTermine();
+                              //  Thread.sleep(500);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            
+                            if (s.equals("4") || s.equals("8") || s.equals("6") || s.equals("2") ) {
                             end = true;
-                            jeu.rnd();
-                        }
+                       //     jeu.rnd();
+                            }
+                            
+                         
+                  
                     }
 
 
