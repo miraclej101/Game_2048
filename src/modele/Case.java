@@ -1,7 +1,7 @@
 package modele;
 
 
-public class Case {
+public class Case  implements Cloneable{
     private int valeur;
     private Jeu jeu;
     private boolean estFusionne;
@@ -23,6 +23,11 @@ public class Case {
 
     public void setEstFusionne(boolean estFusionne) {
         this.estFusionne = estFusionne;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone(); 
     }
 
     

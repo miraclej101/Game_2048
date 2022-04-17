@@ -22,9 +22,11 @@ public class Jeu extends Observable {
     private boolean estTermine;
     private int score;
     private static int best_score =0;
+    private Case[][] tabCoupHistorique;
 
     public Jeu(int size) {
         tabCases = new Case[size][size];
+        tabCoupHistorique = new Case[size][size];
         gagnant = false;
         estTermine = false;
         score = 0;
@@ -67,7 +69,36 @@ public class Jeu extends Observable {
         Jeu.best_score = best_score;
     }
 
+    public Case[][] getTabCoupHistorique() {
+        return tabCoupHistorique;
+    }
+
     
+    private void saveTabCases(){
+        for(int i=0;i<tabCases.length;i++){
+            for(int j=0;j<tabCases.length;j++){
+                try {
+                    Case c = tabCases[i][j];
+                    if(c==null){
+                       tabCoupHistorique[i][j] = null;
+                    }else{
+                       tabCoupHistorique[i][j] = (Case) tabCases[i][j].clone();  
+                    }    
+                } catch (CloneNotSupportedException ex) {
+                    Logger.getLogger(Jeu.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+    public void reprendreCoup(){
+        for(int i = 0; i<tabCoupHistorique.length;i++){
+           for(int j =0;j<tabCoupHistorique.length;j++){
+               tabCases[i][j] = tabCoupHistorique[i][j];
+           }
+       }
+        setChanged();
+        notifyObservers(); 
+    }
     
     private int readFile(String path){
         int score_readfile = 0; 
@@ -227,6 +258,8 @@ public class Jeu extends Observable {
     }
     
     public synchronized void action(Direction d){
+        //enregistrer les positions des case dans tabCoupHistorique avant de deplacer les cases
+        saveTabCases();
         if(d == Direction.gauche){
             for (int i = 0; i < tabCases.length; i++) {
                 for (int j = 1; j < tabCases.length; j++) {

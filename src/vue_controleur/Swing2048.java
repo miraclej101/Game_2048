@@ -21,6 +21,8 @@ public class Swing2048 extends JFrame implements Observer {
     private JLabel[][] tabC;
     private Jeu jeu;
     private JLabel lbl_score,lbl_best_score;
+    private JButton btn_undo;
+ //   private JPanel contentPane;
 
     public Swing2048(Jeu _jeu) {
         jeu = _jeu;
@@ -32,18 +34,25 @@ public class Swing2048 extends JFrame implements Observer {
         Border score_border = BorderFactory.createTitledBorder(lineBorder,"Score");
         lbl_score.setBorder(score_border);
         lbl_score.setHorizontalAlignment(SwingConstants.RIGHT);
+        Dimension d_lbl = new Dimension(60, 50);
+        lbl_score.setPreferredSize(d_lbl);
         lbl_best_score = new JLabel();
         Border best_score_border = BorderFactory.createTitledBorder(lineBorder,"Best");
         lbl_best_score.setBorder(best_score_border);
         lbl_best_score.setHorizontalAlignment(SwingConstants.RIGHT);
+        lbl_best_score.setPreferredSize(d_lbl);
+        btn_undo = new JButton("Undo");
+        btn_undo.setPreferredSize(new Dimension(70, 40));
+        btn_undo.setEnabled(false);
+        JPanel scorePane = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        scorePane.add(lbl_score);
+        scorePane.add(lbl_best_score);
+        scorePane.add(btn_undo);
         
-        JPanel contentPane = new JPanel(new GridLayout(jeu.getSize()+1, jeu.getSize()));
-        contentPane.add(lbl_score);
-        contentPane.add(lbl_best_score);
-        for(int i=0;i<2;i++){
-           contentPane.add(new JLabel()); //ajouter blank labels à grid contentPane  
-        }
-       
+        JPanel contentPane = new JPanel(new BorderLayout());
+        contentPane.add(scorePane,BorderLayout.NORTH);
+        JPanel gridPane = new JPanel(new GridLayout(jeu.getSize(), jeu.getSize()));
+  
          for (int i = 0; i < jeu.getSize(); i++) {
             for (int j = 0; j < jeu.getSize(); j++) {
                 Border border = BorderFactory.createLineBorder(Color.darkGray, 5);
@@ -51,13 +60,14 @@ public class Swing2048 extends JFrame implements Observer {
                 tabC[i][j].setBorder(border);
                 tabC[i][j].setHorizontalAlignment(SwingConstants.CENTER);
              
-                contentPane.add(tabC[i][j]);
+                gridPane.add(tabC[i][j]);
             }
         }
-      
        
+        contentPane.add(gridPane, BorderLayout.CENTER);
         setContentPane(contentPane);
         ajouterEcouteurClavier();
+        btn_undo.addActionListener(e->actionPerformed());
         rafraichir();
              
     }
@@ -138,6 +148,8 @@ public class Swing2048 extends JFrame implements Observer {
                                           // objet qui correspond au controleur dans MVC
             @Override
             public void keyPressed(KeyEvent e) {
+                //setEnable button undo pour rendre possbile la reprise d'un coup précédent 
+                btn_undo.setEnabled(true);
                 switch (e.getKeyCode()) { // on regarde quelle touche a été pressée
                    
                     case KeyEvent.VK_LEFT : jeu.actionThread(Direction.gauche);break;
@@ -148,10 +160,19 @@ public class Swing2048 extends JFrame implements Observer {
                 }
             }
         });
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+       
     }
    
     @Override
     public void update(Observable o, Object arg) {
         rafraichir();
+    }
+
+    private void actionPerformed() {
+       this.requestFocusInWindow(); //rendre focus sur le panel encore une fois pour capturer les keyEvents
+       //restituer les positions des cases dans tabCase comme un coup précédent
+       jeu.reprendreCoup();
     }
 }
