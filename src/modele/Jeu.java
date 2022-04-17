@@ -153,35 +153,8 @@ public class Jeu extends Observable {
                 }
                 //reinitialiser quota_un =2 lors qu'un nouveau jeu lance.
                 quota_undo = 2;
-    //            System.out.println("Best score = "+best_score);
-                /*
-                int r;
-
-                for (int i = 0; i < tabCases.length; i++) {
-                    for (int j = 0; j < tabCases.length; j++) {
-                        r = rnd.nextInt(3);
-
-                        switch (r) {
-                            case 0:
-                                tabCases[i][j] = null;
-                                break;
-                            case 1:
-                                Case c = new Case(2,jeu);
-                                tabCases[i][j] = c;
-                                map.put(c, new Point(j, i));
-                                break;
-                            case 2:
-                                Case c4 = new Case(4,jeu);
-                                tabCases[i][j] = c4;
-                                map.put(c4, new Point(j, i));
-                                break;
-                        }
-                    }
-                }*/
-         //   }
-
-       // }.start();
-
+                estTermine = false; //reinitialiser boolean de termine du jeu après relancer un jeu
+             
         setChanged();
         notifyObservers();
 
