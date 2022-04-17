@@ -140,9 +140,9 @@ public class Swing2048 extends JFrame implements Observer {
                 }
                 if(jeu.isEstTermine()){
                     if(jeu.isGagnant()){
-                        JOptionPane.showMessageDialog(rootPane,"Congratulations, vous avez gagné.","Jeu termine", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(rootPane,"Congratulations, you win.","Game over!", JOptionPane.INFORMATION_MESSAGE);
                     }else{
-                        JOptionPane.showMessageDialog(rootPane,"Vous avez perdu.","Jeu termine", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(rootPane,"You lost.","Game over!", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
                
@@ -197,7 +197,7 @@ public class Swing2048 extends JFrame implements Observer {
     }
 
     private void actionExit() {
-        int result = JOptionPane.showConfirmDialog(this, "Quitter le jeu ?", "Quitter",
+        int result = JOptionPane.showConfirmDialog(this, "Do you want to end this game ?", "Exit",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
         if (result == JOptionPane.YES_OPTION) {
@@ -206,7 +206,7 @@ public class Swing2048 extends JFrame implements Observer {
     }
 
     private void actionNewGame() {
-       int result = JOptionPane.showConfirmDialog(this, "Nouvelle partie ?", "Nouvelle partie",
+       int result = JOptionPane.showConfirmDialog(this, "Do you want a new try ?", "New game",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
         if (result == JOptionPane.YES_OPTION) {
