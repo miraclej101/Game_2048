@@ -17,6 +17,8 @@ import javax.swing.border.LineBorder;
 
 public class Swing2048 extends JFrame implements Observer {
     private static final int PIXEL_PER_SQUARE = 60;
+    private static final String PATH_ICON_UNDO = "./60214_undo_icon.png";
+    private int quota_undo =2; //nombre de fois qu'on peut reprendre d'un coup précédent
     // tableau de cases : i, j -> case graphique
     private JLabel[][] tabC;
     private Jeu jeu;
@@ -34,15 +36,16 @@ public class Swing2048 extends JFrame implements Observer {
         Border score_border = BorderFactory.createTitledBorder(lineBorder,"Score");
         lbl_score.setBorder(score_border);
         lbl_score.setHorizontalAlignment(SwingConstants.RIGHT);
-        Dimension d_lbl = new Dimension(60, 50);
+        Dimension d_lbl = new Dimension(80, 50);
         lbl_score.setPreferredSize(d_lbl);
         lbl_best_score = new JLabel();
-        Border best_score_border = BorderFactory.createTitledBorder(lineBorder,"Best");
+        Border best_score_border = BorderFactory.createTitledBorder(lineBorder,"Best score");
         lbl_best_score.setBorder(best_score_border);
         lbl_best_score.setHorizontalAlignment(SwingConstants.RIGHT);
         lbl_best_score.setPreferredSize(d_lbl);
-        btn_undo = new JButton("Undo");
-        btn_undo.setPreferredSize(new Dimension(70, 40));
+        ImageIcon img_undo = new ImageIcon(PATH_ICON_UNDO);
+        btn_undo = new JButton(img_undo);
+        btn_undo.setPreferredSize(new Dimension(40, 40));
         btn_undo.setEnabled(false);
         JPanel scorePane = new JPanel(new FlowLayout(FlowLayout.LEFT));
         scorePane.add(lbl_score);
@@ -149,7 +152,10 @@ public class Swing2048 extends JFrame implements Observer {
             @Override
             public void keyPressed(KeyEvent e) {
                 //setEnable button undo pour rendre possbile la reprise d'un coup précédent 
-                btn_undo.setEnabled(true);
+                if(quota_undo>0){
+                    btn_undo.setEnabled(true);
+                }
+      
                 switch (e.getKeyCode()) { // on regarde quelle touche a été pressée
                    
                     case KeyEvent.VK_LEFT : jeu.actionThread(Direction.gauche);break;
@@ -174,5 +180,10 @@ public class Swing2048 extends JFrame implements Observer {
        this.requestFocusInWindow(); //rendre focus sur le panel encore une fois pour capturer les keyEvents
        //restituer les positions des cases dans tabCase comme un coup précédent
        jeu.reprendreCoup();
+       quota_undo--;  //un nombre de quota undo décrémenté par 1
+       if(quota_undo<=0){
+          btn_undo.setEnabled(false); 
+       }
+       
     }
 }
