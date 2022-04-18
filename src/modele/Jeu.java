@@ -47,11 +47,7 @@ public class Jeu extends Observable {
         return tabCases[i][j];
     }
 
-    public Case[][] getTabCases() {
-        return tabCases;
-    }
-
-    public boolean isEstTermine() {
+    public boolean estTermine() {
         return estTermine;
     }
 
@@ -135,6 +131,8 @@ public class Jeu extends Observable {
         Jeu jeu = this;
      //   new Thread() { // permet de libérer le processus graphique ou de la console
      //       public void run() {
+                //initialiser score à 0 chauqe nouveau jeu
+                score = 0;
                   //initialiser 2 case aléatoire des valeurs 2 ou 4
                 for (int i = 0; i < tabCases.length; i++) {
                     for (int j = 0; j < tabCases.length; j++) {  

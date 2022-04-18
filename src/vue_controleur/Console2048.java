@@ -2,35 +2,32 @@ package vue_controleur;
 
 import modele.Case;
 import modele.Jeu;
+import modele.Direction;
 
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Console2048 extends Thread implements Observer {
 
     private Jeu jeu;
 
-
-
     public Console2048(Jeu _jeu) {
         jeu = _jeu;
-
     }
-
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             afficher();
 
             synchronized (this) {
                 ecouteEvennementClavier();
                 try {
-                    wait(); // lorsque le processus s'endort, le verrou sur this est relâché, ce qui permet au processus de ecouteEvennementClavier()
-                    // d'entrer dans la partie synchronisée, ce verrou évite que le réveil du processus de la console (update(..)) ne soit exécuté avant
+                    wait(); // lorsque le processus s'endort, le verrou sur this est relâché, ce qui permet
+                            // au processus de ecouteEvennementClavier()
+                    // d'entrer dans la partie synchronisée, ce verrou évite que le réveil du
+                    // processus de la console (update(..)) ne soit exécuté avant
                     // que le processus de la console ne soit endormi
 
                 } catch (InterruptedException e) {
@@ -42,7 +39,8 @@ public class Console2048 extends Thread implements Observer {
     }
 
     /**
-     * Correspond à la fonctionnalité de Contrôleur : écoute les évènements, et déclenche des traitements sur le modèle
+     * Correspond à la fonctionnalité de Contrôleur : écoute les évènements, et
+     * déclenche des traitements sur le modèle
      */
     private void ecouteEvennementClavier() {
 
@@ -55,41 +53,42 @@ public class Console2048 extends Thread implements Observer {
                     boolean end = false;
 
                     while (!end) {
-                    
-                            String s = null;
-                            try {
-                                s = Character.toString((char)System.in.read());
-                           //     end = jeu.isEstTermine();
-                              //  Thread.sleep(500);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            
-                            if (s.equals("4") || s.equals("8") || s.equals("6") || s.equals("2") ) {
-                            end = true;
-                       //     jeu.rnd();
-                            }
-                            
-                         
-                  
-                    }
+                        String s = null;
+                        try {
+                            s = Character.toString((char) System.in.read());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
+                        if (s.equals("4")) {
+                            end = true;
+                            jeu.actionThread(Direction.gauche);
+                        } else if (s.equals("8")) {
+                            end = true;
+                            jeu.actionThread(Direction.haut);
+                        } else if (s.equals("6")) {
+                            end = true;
+                            jeu.actionThread(Direction.droite);
+                        } else if (s.equals("2")) {
+                            end = true;
+                            jeu.actionThread(Direction.bas);
+                        }
+                    }
 
                 }
 
             }
         }.start();
 
-
     }
 
     /**
      * Correspond à la fonctionnalité de Vue : affiche les données du modèle
      */
-    private void afficher()  {
+    private void afficher() {
 
-
-        System.out.printf("\033[H\033[J"); // permet d'effacer la console (ne fonctionne pas toujours depuis la console de l'IDE)
+        System.out.printf("\033[H\033[J"); // permet d'effacer la console (ne fonctionne pas toujours depuis la console
+                                           // de l'IDE)
 
         for (int i = 0; i < jeu.getSize(); i++) {
             for (int j = 0; j < jeu.getSize(); j++) {
@@ -115,7 +114,6 @@ public class Console2048 extends Thread implements Observer {
             }
         }
     }
-
 
     @Override
     public void update(Observable o, Object arg) {

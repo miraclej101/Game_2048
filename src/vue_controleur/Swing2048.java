@@ -138,7 +138,7 @@ public class Swing2048 extends JFrame implements Observer {
                     }
 
                 }
-                if(jeu.isEstTermine()){
+                if(jeu.estTermine()){
                     if(jeu.isGagnant()){
                         JOptionPane.showMessageDialog(rootPane,"Congratulations, you win.","Game over!", JOptionPane.INFORMATION_MESSAGE);
                     }else{
