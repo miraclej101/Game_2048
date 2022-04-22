@@ -23,7 +23,9 @@ public class Swing2048 extends JFrame implements Observer {
     private Jeu jeu;
     private JLabel lbl_score,lbl_best_score;
     private JButton btn_undo;
- //   private JPanel contentPane;
+    protected final JMenuBar menuBar;
+    protected JMenuItem menuItem1,menuItem2,menuItem3;
+
 
     public Swing2048(Jeu _jeu) {
         jeu = _jeu;
@@ -51,14 +53,17 @@ public class Swing2048 extends JFrame implements Observer {
         scorePane.add(lbl_best_score);
         scorePane.add(btn_undo);
         
-        final JMenuBar menuBar = new JMenuBar();
+        menuBar = new JMenuBar();
         JMenu settingsMenu = new JMenu("Settings");
-        JMenuItem newMenuItem1 = new JMenuItem("New game");
-        JMenuItem newMenuItem2 = new JMenuItem("Exit");
-        newMenuItem2.addActionListener(e -> actionExit());
-        newMenuItem1.addActionListener(e -> actionNewGame());
-        settingsMenu.add(newMenuItem1);
-        settingsMenu.add(newMenuItem2);
+        menuItem1 = new JMenuItem("New game");
+        menuItem2 = new JMenuItem("2 Players");
+        menuItem3 = new JMenuItem("Exit");
+        menuItem1.addActionListener(e -> actionNewGame());
+        menuItem2.addActionListener(e -> action2Joueurs());
+        menuItem3.addActionListener(e -> actionExit());
+        settingsMenu.add(menuItem1);
+        settingsMenu.add(menuItem2);
+        settingsMenu.add(menuItem3);
         menuBar.add(settingsMenu);
         setJMenuBar(menuBar);
         
@@ -138,13 +143,7 @@ public class Swing2048 extends JFrame implements Observer {
                     }
 
                 }
-                if(jeu.estTermine()){
-                    if(jeu.isGagnant()){
-                        JOptionPane.showMessageDialog(rootPane,"Congratulations, you win.","Game over!", JOptionPane.INFORMATION_MESSAGE);
-                    }else{
-                        JOptionPane.showMessageDialog(rootPane,"You lost.","Game over!", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                }
+              showMessage();
                
             }
         });
@@ -156,7 +155,7 @@ public class Swing2048 extends JFrame implements Observer {
      * Correspond à la fonctionnalité de Contrôleur : écoute les évènements, et
      * déclenche des traitements sur le modèle
      */
-    private void ajouterEcouteurClavier() {
+    protected void ajouterEcouteurClavier() {
         addKeyListener(new KeyAdapter() { // new KeyAdapter() { ... } est une instance de classe anonyme, il s'agit d'un
                                           // objet qui correspond au controleur dans MVC
             @Override
@@ -196,7 +195,7 @@ public class Swing2048 extends JFrame implements Observer {
        
     }
 
-    private void actionExit() {
+    protected void actionExit() {
         int result = JOptionPane.showConfirmDialog(this, "Do you want to end this game ?", "Exit",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
@@ -214,4 +213,35 @@ public class Swing2048 extends JFrame implements Observer {
             btn_undo.setEnabled(false);
         }
     }
+    
+    public void showMessage(){
+         if(jeu.estTermine()){
+                    if(jeu.isGagnant()){
+                        JOptionPane.showMessageDialog(rootPane,"Congratulations, you win.","Game over!", JOptionPane.INFORMATION_MESSAGE);
+                    }else{
+                        JOptionPane.showMessageDialog(rootPane,"You lost.","Game over!", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+    }
+
+    private void action2Joueurs() {
+        Jeu newJeu = new Jeu(4);
+        Swing2Joueurs ecran1 = new Swing2Joueurs(newJeu,this);
+        newJeu.addObserver(ecran1);
+        ecran1.setLocation(500,300);
+        ecran1.setVisible(true);
+        this.setState(JFrame.ICONIFIED); //minimise la fenêtre après avoir ouvert un écran de 2 joueurs
+    }
+    
+    public void switchMenuBarColor(){
+        Color color;
+        if(menuBar.getBackground() == Color.GREEN){
+           color = Color.LIGHT_GRAY;
+        }else{
+           color = Color.GREEN; 
+        }
+        menuBar.setBackground(color);
+        menuBar.setOpaque(true);
+    }
+     
 }
