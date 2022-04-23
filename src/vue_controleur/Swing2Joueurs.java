@@ -18,8 +18,8 @@ import modele.Jeu;
  * @author malas
  */
 public class Swing2Joueurs extends Swing2048 {
-    private int nb_coup =0;
-    protected Jeu jeu;
+    
+    private Jeu jeu;
     private SwingSansEcouter ecran2;
     private Swing2048 parent;
     
@@ -43,9 +43,6 @@ public class Swing2Joueurs extends Swing2048 {
                                           // objet qui correspond au controleur dans MVC
             @Override
             public void keyPressed(KeyEvent e) {
-                //incremente nb_coup aprèes chaque keypresses
-                nb_coup++;
-                System.out.println("nb_coup = "+nb_coup);
                 switch (e.getKeyCode()) { // on regarde quelle touche a été pressée
                    
                     case KeyEvent.VK_LEFT : jeu.actionThread(Direction.gauche);break;
@@ -54,25 +51,26 @@ public class Swing2Joueurs extends Swing2048 {
                     case KeyEvent.VK_UP : jeu.actionThread(Direction.haut);break;
 
                 }
+                //incremente nb_coup aprèes chaque keypresses par la classe Jeu
+                System.out.println("nb_coup = "+jeu.getNb_coup());
                 switchMenuBarColor();
                 ecran2.switchMenuBarColor();
             }
         });
-     
-    }
+         }
 
     @Override
     public void showMessage() {
         if(jeu.estTermine()){
                     if(jeu.isGagnant()){
-                        if(nb_coup%2==1){
+                        if(jeu.getNb_coup()%2==1){
                             JOptionPane.showMessageDialog(rootPane,"Congratulations, Player1 win.","Game over!", JOptionPane.INFORMATION_MESSAGE);
                         }else{
                             JOptionPane.showMessageDialog(rootPane,"Congratulations, Player2 win.","Game over!", JOptionPane.INFORMATION_MESSAGE);
                         }
                        
                     }else{
-                        if(nb_coup%2==1){
+                        if(jeu.getNb_coup()%2==1){
                             JOptionPane.showMessageDialog(rootPane,"Player1 lost.","Game over!", JOptionPane.INFORMATION_MESSAGE);
                         }else{
                             JOptionPane.showMessageDialog(rootPane,"Player2 lost.","Game over!", JOptionPane.INFORMATION_MESSAGE);

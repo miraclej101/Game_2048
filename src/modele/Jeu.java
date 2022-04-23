@@ -24,6 +24,7 @@ public class Jeu extends Observable {
     private static int best_score =0;
     private Case[][] tabCoupHistorique;
     private int quota_undo =2; //nombre de fois qu'on peut reprendre d'un coup précédent
+    private int nb_coup =0;
     
     public Jeu(int size) {
         tabCases = new Case[size][size];
@@ -72,6 +73,10 @@ public class Jeu extends Observable {
 
     public Case[][] getTabCoupHistorique() {
         return tabCoupHistorique;
+    }
+
+    public int getNb_coup() {
+        return nb_coup;
     }
 
     
@@ -133,6 +138,8 @@ public class Jeu extends Observable {
      //       public void run() {
                 //initialiser score à 0 chauqe nouveau jeu
                 score = 0;
+                //i,itialiser nb_coup = 0 pour la version 2 Players
+                nb_coup=0;
                   //initialiser 2 case aléatoire des valeurs 2 ou 4
                 for (int i = 0; i < tabCases.length; i++) {
                     for (int j = 0; j < tabCases.length; j++) {  
@@ -224,6 +231,7 @@ public class Jeu extends Observable {
         t.start();
         try {
             t.join();
+            nb_coup++;  //incrementer nb_coup pour utiliser dans la version 2 Players
         } catch (InterruptedException ex) {
             Logger.getLogger(Jeu.class.getName()).log(Level.SEVERE, null, ex);
         }
