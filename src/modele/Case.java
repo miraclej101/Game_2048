@@ -35,32 +35,6 @@ public class Case  implements Cloneable{
         return super.clone(); 
     }
 
-    
-  
-    /*
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (obj==null || !(obj instanceof Case)) {
-            return false;
-        }
-        if(obj==this){
-            return true;
-        }
-
-        Case c = (Case) obj;
-
-        return c.valeur == this.valeur && c.idCase == this.idCase;
-    }
-
-    @Override
-    public int hashCode() {
-        
-        int val =valeur+idCase;
-        return val; 
-        
-    }
-*/
     /*
      * Permet de déplacer la case
      * Tant que le déplacement n'est pas terminé

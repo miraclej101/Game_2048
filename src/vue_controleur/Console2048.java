@@ -89,7 +89,7 @@ public class Console2048 extends Thread implements Observer {
 
         System.out.printf("\033[H\033[J"); // permet d'effacer la console (ne fonctionne pas toujours depuis la console
                                            // de l'IDE)
-
+        System.out.println("Score = "+jeu.getScore()+" Best score = "+jeu.getBest_score());
         for (int i = 0; i < jeu.getSize(); i++) {
             for (int j = 0; j < jeu.getSize(); j++) {
                 Case c = jeu.getCase(i, j);
@@ -101,6 +101,13 @@ public class Console2048 extends Thread implements Observer {
 
             }
             System.out.println();
+        }
+        if(jeu.estTermine()){
+            if(jeu.isGagnant()){
+                System.out.println("Congratulations, You win!");
+            }else{
+                System.out.println("You lost!");
+            }
         }
 
     }
