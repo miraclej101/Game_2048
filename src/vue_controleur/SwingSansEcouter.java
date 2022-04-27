@@ -11,8 +11,8 @@ import javax.swing.JFrame;
 import modele.Jeu;
 
 /**
- *
- * @author malas
+ *La classe de la fenêtre sans ecouter pour montrer le jeu de 2 joueurs
+ * @aauthor Malasri Janumporn, Anh-Kiet VO
  */
 public class SwingSansEcouter extends Swing2048 {
     
@@ -25,12 +25,17 @@ public class SwingSansEcouter extends Swing2048 {
         setLocation(750,300);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     }
-
+    /*
+    *Override showMessage pour enlever les pannaeaux de messages
+    */
     @Override
     public void showMessage() {
        
     }
 
+    /*
+    *Override ajouterEcouterClavier pour enlever addKeyListener
+    */
     @Override
     protected void ajouterEcouteurClavier() {
        

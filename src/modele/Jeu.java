@@ -24,8 +24,9 @@ public class Jeu extends Observable {
     private static int best_score =0;
     private Case[][] tabCoupHistorique;
     private int quota_undo =2; //nombre de fois qu'on peut reprendre d'un coup précédent
-    private int nb_coup =0;
+    private int nb_coup =0;  //nb_coup pour détermine quel joueur donne un coup passant 
     
+    // Constructeur de notre classe Jeu
     public Jeu(int size) {
         tabCases = new Case[size][size];
         tabCoupHistorique = new Case[size][size];
@@ -35,51 +36,66 @@ public class Jeu extends Observable {
         rnd();
        
     }
-
+    
+    //Renvoyer le boolean de la variable gagnant qui determine si un joueur gagne à la fin du jeu.
     public boolean isGagnant() {
         return gagnant;
     }
-      
+    
+    // Getter qui récupère la taille de notre tableau de Case
     public int getSize() {
         return tabCases.length;
     }
 
+    // Getter qui récupère la valeur de la cASE
     public Case getCase(int i, int j) {
         return tabCases[i][j];
     }
 
+    // Booléen pour déterminer si le jeu est terminé
     public boolean estTermine() {
         return estTermine;
     }
 
+    // Getter qui récupère le score
     public int getScore() {
         return score;
     }
+    
+    // Getter qui récupère le meilleur score
     public static int getBest_score() {
         return best_score;
     }
 
+    // Getter qui récupère le quota pour annuler un coup
     public int getQuota_undo() {
         return quota_undo;
     }
     
+    // Setter qui modifie le score
     public void setScore(int score) {
         this.score = score;
     }
-
+    
+    // Setter qui modifie le meilleur score
     public static void setBest_score(int best_score) {
         Jeu.best_score = best_score;
     }
 
+    // Getter qui récupère l'hitorique de notre tableau de Case
     public Case[][] getTabCoupHistorique() {
         return tabCoupHistorique;
     }
 
+    //Getter qui récupère un nombre de coup déjà effectue dans le jeu
     public int getNb_coup() {
         return nb_coup;
     }
-
     
+    /*
+     * On parcourt notre tableau de Case pour le cloner afin de stocker la grille
+     * avant déplacement
+     */
     private void saveTabCases(){
         for(int i=0;i<tabCases.length;i++){
             for(int j=0;j<tabCases.length;j++){
@@ -96,6 +112,12 @@ public class Jeu extends Observable {
             }
         }
     }
+    
+     /*
+     * On parcourt notre tableau de case afin de mettre les valeurs de notre grille
+     * avec les anciennes valeurs avant déplacement, fonction appelé pour annuler un
+     * coup
+     */
     public void reprendreCoup(){
         for(int i = 0; i<tabCoupHistorique.length;i++){
            for(int j =0;j<tabCoupHistorique.length;j++){
@@ -107,6 +129,7 @@ public class Jeu extends Observable {
         notifyObservers(); 
     }
     
+     // Pour lire les fichiers best_score.txt
     private int readFile(String path){
         int score_readfile = 0; 
         try {
@@ -121,6 +144,8 @@ public class Jeu extends Observable {
         }
         return score_readfile;
     }
+    
+    // Pour ecrire dans le fichier best_score.txt le score
     public static void writeFile(String path){
         try {
             FileWriter fWriter = new FileWriter(path);
@@ -133,38 +158,46 @@ public class Jeu extends Observable {
     }
     
     public void rnd() {
-        Jeu jeu = this;
-     //   new Thread() { // permet de libérer le processus graphique ou de la console
-     //       public void run() {
-                //initialiser score à 0 chauqe nouveau jeu
+    //    Jeu jeu = this;
+                 // On initialise le score à 0 à chaque nouvelle partie
                 score = 0;
-                //i,itialiser nb_coup = 0 pour la version 2 Players
+                //i,intialiser nb_coup = 0 pour la version 2 Players
                 nb_coup=0;
-                  //initialiser 2 case aléatoire des valeurs 2 ou 4
+                //On initialise notre grille du 2048, tous les positions sont null;
                 for (int i = 0; i < tabCases.length; i++) {
                     for (int j = 0; j < tabCases.length; j++) {  
                         tabCases[i][j] = null;
                     }
                 }
+                // On initialise 2 case aléatoire en valeur 2 ou 4
                 for(int i=0;i<2;i++){
-                    jeu.nouvelleCase();  
+                    nouvelleCase();  
                 }
+                // On lit le meilleur score de la partie
                 String path = "./best_score.txt";  //lire la meilleurs score du jeu
                 int score_read = readFile(path);
-                //affecter best_score si la meilleurs lu par le fichier est plus important 
-                //que la variable best_score de la class
+                /*
+                * On affecte best_score si le meilleur lu par le fichier
+                * est plus important que la variable best score de la class
+                */
                 if(best_score<score_read){    
                    best_score = score_read;
                 }
-                //reinitialiser quota_un =2 lors qu'un nouveau jeu lance.
+                // Réinitialiser le quota_un à 2 lors qu'un nouveau jeu est lancé
                 quota_undo = 2;
-                estTermine = false; //reinitialiser boolean de termine du jeu après relancer un jeu
+                // Réinitialiser le booléen estTermine du jeu après qu'un nouveau jeu est lancé
+                estTermine = false; 
              
         setChanged();
         notifyObservers();
 
     }
     
+     /*
+     * On appelle getPointVoisin pour récuperer les coordonées de cette case
+     * si au bord d'une case on return une nouvelle case avec valeur -1
+     * Sinon on return la valeur de cette case voisine
+     */
     public Case getVoisin(Direction d, Point p) {
        
         Point pt = getPointVoisin(d, p);
@@ -176,28 +209,28 @@ public class Jeu extends Observable {
         return tabCases[pt.getY()][pt.getX()];
     }
     
+    /*
+     * En fonction de la direction indiqué, on récupère les coordonées de cette case
+     * voisine
+     */
     public Point getPointVoisin(Direction d, Point p){
         int i =-1;
         int j = -1;
    //     System.out.println("idcase c getPointVoisin = "+c.getIdCase());
         if (d == Direction.gauche) {          
-       //     Point p = map.get(c);
             i = p.getY();
             j = p.getX() - 1;
         }else if (d == Direction.droite) {       
-        //    Point p = map.get(c);
             i = p.getY();
             j = p.getX() + 1;
         }else if (d == Direction.haut) {
-           // Point p = map.get(c);
             i = p.getY() - 1;
             j = p.getX();
         }else if (d == Direction.bas) {
-         //  Point p = map.get(c);
             i = p.getY() + 1;
             j = p.getX();
         }
-        
+        // Si on tombe sur les bords d'une case on affcte i et j égale à -1, et renvoie ce point 
         if (i < 0 || i >= tabCases.length || j < 0 || j >= tabCases.length) {
             i=-1;
             j=-1;
@@ -206,6 +239,8 @@ public class Jeu extends Observable {
         return pt;
         
     }
+    
+    // Initialise la fusion des cases à false après chaque déplacement
     public void initCaseFusion(){
         for(int i=0;i<tabCases.length;i++){
             for(int j=0;j<tabCases.length;j++){
@@ -215,26 +250,35 @@ public class Jeu extends Observable {
             }
         }
     }
-   ///classe interne    
+    // Classe interne pour la mise en place de thread dans le déplacement
     class KeyThread extends Thread{
         private Direction d;
+        // On prends un paramètre de la direction indiqué (KeyListenner), 
         KeyThread(Direction _d){
             d = _d;
         }
+        // Au lancement de Keythread on va run la fonction action
         @Override
         public void run() {
           action(d);
         } 
     }
+    
+    // actionThread va instancer un thread pour le déplacement
     public void actionThread(Direction d){
         KeyThread t = new KeyThread(d);
-        t.start();
+        // start du thread
+        t.start();  
         try {
+            // attendre jusqu'à la fin du thread
             t.join();
             nb_coup++;  //incrementer nb_coup pour utiliser dans la version 2 Players
         } catch (InterruptedException ex) {
             Logger.getLogger(Jeu.class.getName()).log(Level.SEVERE, null, ex);
         }
+        /* Si le jeu n'est pas terminé, à chaque déplacement on va initialiser une
+        * nouvelleCase
+        */
         if (!jeuTermine()) {
             nouvelleCase(); //lancer une nouvelle case à chaque tour si le jeu n'est pas encore terminé.
         }
@@ -244,8 +288,14 @@ public class Jeu extends Observable {
         notifyObservers();      
     }
     
+    /*
+     * En fonction de la direction indiqué par l'utilisateur nous allons créer un
+     * nouveau point
+     * et nous déplaçons cette case en appellant la fonction deplacer dans Case qui
+     * va déplacer celui-ci
+     */
     public synchronized void action(Direction d){
-        //enregistrer les positions des case dans tabCoupHistorique avant de deplacer les cases
+        // Avant le déplacement on enregistre notre grille dans tabCoupHistorique
         saveTabCases();
         if(d == Direction.gauche){
             for (int i = 0; i < tabCases.length; i++) {
@@ -287,6 +337,12 @@ public class Jeu extends Observable {
      
     }    
 
+     /*
+     * Fonction utilisé par la Case dans deplacer()
+     * Permet de récuperer les coordoonées de la case voisine
+     * et de déplacer notre case actuel c à cette nouvelle position
+     * on récupère les coordoonées actuel pour les mettres à null
+     */
     public void deplacer(Direction d, Case c, Point p) {
        
          Point ptVoisin = getPointVoisin(d, p);
@@ -297,6 +353,7 @@ public class Jeu extends Observable {
                      
     }
 
+    // Enlever une valeur de la case de la grille en mettant nul 
     public void enlever(Point p) {
         int i = p.getY();
         int j = p.getX();
@@ -304,6 +361,7 @@ public class Jeu extends Observable {
         tabCases[i][j] = null;
     }
 
+    // Permet d'initialiser dans 2 cases aléatoires la valeur de 2 ou 4
     public void nouvelleCase() {
         boolean termine = false;
        
@@ -328,6 +386,12 @@ public class Jeu extends Observable {
         } while (!termine);
     }
 
+     /*
+     * On parcourt la grille de jeu et on vérifie
+     * les conditions de victoire ou de défaite
+     * Si la case n'est plus null et si la valeur est 2048 alors victoire
+     * Sinon, le joueur perd.
+     */
     public boolean jeuTermine() {
         for(int i = 0; i < tabCases.length; i++) {
             for (int j = 0; j < tabCases.length; j++) {

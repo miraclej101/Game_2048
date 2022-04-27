@@ -28,10 +28,17 @@ public class Swing2048 extends JFrame implements Observer {
 
 
     public Swing2048(Jeu _jeu) {
+        // Référence de notre jeu
         jeu = _jeu;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // On déclare la taille de notre 2048
         setSize(jeu.getSize() * PIXEL_PER_SQUARE, (jeu.getSize()+1) * PIXEL_PER_SQUARE);
+        
+        // JLabel pour mettre notre grille du 2048
         tabC = new JLabel[jeu.getSize()][jeu.getSize()];
+        
+        // JLabel pour mettre le score
         lbl_score = new JLabel(); 
         LineBorder lineBorder = new LineBorder(Color.BLUE);
         Border score_border = BorderFactory.createTitledBorder(lineBorder,"Score");
@@ -39,22 +46,31 @@ public class Swing2048 extends JFrame implements Observer {
         lbl_score.setHorizontalAlignment(SwingConstants.RIGHT);
         Dimension d_lbl = new Dimension(80, 50);
         lbl_score.setPreferredSize(d_lbl);
+        
+        // JLabel pour le best score
         lbl_best_score = new JLabel();
         Border best_score_border = BorderFactory.createTitledBorder(lineBorder,"Best score");
         lbl_best_score.setBorder(best_score_border);
         lbl_best_score.setHorizontalAlignment(SwingConstants.RIGHT);
         lbl_best_score.setPreferredSize(d_lbl);
+        
+        // JButton pour annuler un coup
         ImageIcon img_undo = new ImageIcon(PATH_ICON_UNDO);
         btn_undo = new JButton(img_undo);
         btn_undo.setPreferredSize(new Dimension(40, 40));
         btn_undo.setEnabled(false);
+        
+        // JPanel pour inserer le score et le best score
         JPanel scorePane = new JPanel(new FlowLayout(FlowLayout.LEFT));
         scorePane.add(lbl_score);
         scorePane.add(lbl_best_score);
         scorePane.add(btn_undo);
         
+        // Notre barre de menu de navigation
         menuBar = new JMenuBar();
         JMenu settingsMenu = new JMenu("Settings");
+        // En fonction de ce que l'utilisateur clique sur le menu déroulante dans la
+        // barre de menu de navigation on appelle une fonction
         menuItem1 = new JMenuItem("New game");
         menuItem2 = new JMenuItem("2 Players");
         menuItem3 = new JMenuItem("Exit");
@@ -67,6 +83,7 @@ public class Swing2048 extends JFrame implements Observer {
         menuBar.add(settingsMenu);
         setJMenuBar(menuBar);
         
+        // On créer un JPanel
         JPanel contentPane = new JPanel(new BorderLayout());
         contentPane.add(scorePane,BorderLayout.NORTH);
         JPanel gridPane = new JPanel(new GridLayout(jeu.getSize(), jeu.getSize()));
@@ -82,6 +99,7 @@ public class Swing2048 extends JFrame implements Observer {
             }
         }
        
+        // On veut afficher le panel contentPane qui contient tous nos JPanel
         contentPane.add(gridPane, BorderLayout.CENTER);
         setContentPane(contentPane);
         ajouterEcouteurClavier();
@@ -195,6 +213,7 @@ public class Swing2048 extends JFrame implements Observer {
        
     }
 
+    // Affichage d'un pop-up pour confirmer si l'utilisateur veut quitter
     protected void actionExit() {
         int result = JOptionPane.showConfirmDialog(this, "Do you want to end this game ?", "Exit",
                 JOptionPane.YES_NO_OPTION,
@@ -204,6 +223,8 @@ public class Swing2048 extends JFrame implements Observer {
         }
     }
 
+    // Affichage d'un pop-up pour confirmer si l'utilisateur veut nouvelle partie et
+    // va appeller rnd()
     private void actionNewGame() {
        int result = JOptionPane.showConfirmDialog(this, "Do you want a new try ?", "New game",
                 JOptionPane.YES_NO_OPTION,
@@ -214,6 +235,7 @@ public class Swing2048 extends JFrame implements Observer {
         }
     }
     
+    // Affichage d'un pop-up pour notifier l'utilisateur s'il a gagné ou perdu
     public void showMessage(){
          if(jeu.estTermine()){
                     if(jeu.isGagnant()){
@@ -224,6 +246,8 @@ public class Swing2048 extends JFrame implements Observer {
                 }
     }
 
+     // Création d'un nouvelle instance de Jeu et de Swing2Joueurs pour avoir 2
+    // interfaces Swing pour le mode 2 joueur
     private void action2Joueurs() {
         Jeu newJeu = new Jeu(4);
         Swing2Joueurs ecran1 = new Swing2Joueurs(newJeu,this);
@@ -233,6 +257,8 @@ public class Swing2048 extends JFrame implements Observer {
         this.setState(JFrame.ICONIFIED); //minimise la fenêtre après avoir ouvert un écran de 2 joueurs
     }
     
+    // Change la couleur de la barre de menu de navigation. Si la couleur est verte
+    // on change par gris et vice-versa pour le mode 2 joueurs.
     public void switchMenuBarColor(){
         Color color;
         if(menuBar.getBackground() == Color.GREEN){

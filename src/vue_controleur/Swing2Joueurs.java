@@ -14,15 +14,21 @@ import modele.Direction;
 import modele.Jeu;
 
 /**
- *
- * @author malas
+ * La classe qui gère la fenêtre mère de la mode 2Joueurs
+ * @author Malasri Janumporn, Anh-Kiet VO
  */
 public class Swing2Joueurs extends Swing2048 {
     
     private Jeu jeu;
     private SwingSansEcouter ecran2;
     private Swing2048 parent;
-    
+
+/**
+ * Le constructeur de la classe prends un paramètre de la classe Jeu et celui de
+ * la classe Swing2048 pour la fenêtre mère.
+ * @param _jeu
+ * @param _parent 
+ */    
     public Swing2Joueurs(Jeu _jeu, Swing2048 _parent) {
         super(_jeu);
         this.jeu = _jeu;
@@ -36,7 +42,9 @@ public class Swing2Joueurs extends Swing2048 {
         ecran2.setVisible(true);
     }
     
-
+    /*
+    * Override la mèthod d'ajouterEcouterClavier pour enlever la partie du quota_undo (bouton de reprise du coup)
+    */
     @Override
     protected void ajouterEcouteurClavier() {
         addKeyListener(new KeyAdapter() { // new KeyAdapter() { ... } est une instance de classe anonyme, il s'agit d'un
@@ -59,6 +67,9 @@ public class Swing2Joueurs extends Swing2048 {
         });
          }
 
+    /*
+    *Override showMessage pour montrer les messages différentes dans le mode 2joueurs
+    */
     @Override
     public void showMessage() {
         if(jeu.estTermine()){
@@ -80,6 +91,10 @@ public class Swing2Joueurs extends Swing2048 {
                 }
     }
 
+    /*
+    *Override actionExit pour fermer les deux fenêtres dans le mode 2Joueurs
+    et restituer la fenêtre du jeu classique (fenêtre parent).
+    */
     @Override
     protected void actionExit() {
         int result = JOptionPane.showConfirmDialog(this, "Do you want to end this game of 2 players ?", "Exit 2 players",
